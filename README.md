@@ -1,12 +1,6 @@
-# Devialet iPhone App Source
+# ExPro: A modern iOS controller app for Devialet Expert Pro amplifiers
 
-This folder contains a native iOS implementation for controlling Devialet Expert Pro amplifiers with direct UDP networking.
-
-## What is implemented
-
-- `Sources/DevialetCore/`: protocol, transport, controller, safety policy, shared models
-- `Tests/DevialetCoreTests/`: fixture-based protocol tests and parity checks
-- `DevialetExpertControlApp/`: SwiftUI app source (main screen, diagnostics, app state store, `Info.plist`)
+This project provides a native iOS implementation for controlling Devialet Expert Pro amplifiers with direct UDP networking.
 
 ## Feature coverage
 
@@ -20,9 +14,21 @@ This folder contains a native iOS implementation for controlling Devialet Expert
 - Cached amplifier IP and cached status via `UserDefaults`
 - Optimistic UI updates and 1s refresh loop while app is active
 
-## Add to Xcode
+## Add to Xcode and build
 
-### Option A: Generate project with XcodeGen
+### Option A: Use generated Xcode project
+
+1. Download everything (hint: on Github, click the down arrow on the green "Code" button,  choose "Download ZIP", and then unzip the archive).
+2. Double-click the file "DevialetExpertControl.xcodeproj" to open it in Xcode.
+3. Go to the "Signing & Capabilities" tab and add your Apple account under the Team dropdown.
+4. Connect your iPhone to your Mac with a cable
+5. In the Privacy & Security settings on the phone, turn on "Developer Mode"
+6. Build and run on your phone (Command-R)
+
+Problems with signing or getting the app on your phone? Please consult Google or a local chatbot.
+
+
+### Option B: Generate project with XcodeGen
 
 ```bash
 brew install xcodegen
@@ -33,7 +39,9 @@ open DevialetExpertControl.xcodeproj
 
 The generator spec is in `ios/project.yml`.
 
-### Option B: Manual project setup
+After generating, continue as above.
+
+### Option C: Manual project setup
 
 1. Open Xcode and create a new iOS App project (SwiftUI, iOS 17+).
 2. Add `DevialetExpertControlApp/*.swift` files and `DevialetExpertControlApp/Info.plist` to the app target.
@@ -50,12 +58,6 @@ cd ios
 swift test
 ```
 
-If your environment has Swift/SDK cache permission issues or toolchain mismatch, run tests from a machine with full Xcode selected:
+## License
 
-```bash
-sudo xcode-select -s /Applications/Xcode.app/Contents/Developer
-```
-
-## Real-device acceptance checklist
-
-Use `INTEGRATION_CHECKLIST.md` in this folder for on-network validation against a real Expert Pro.
+This documentation and code is provided as-is for educational and personal use. Devialet is a trademark of Devialet SAS. This project is not affiliated with or endorsed by Devialet.
