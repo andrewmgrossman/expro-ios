@@ -1,0 +1,36 @@
+name: DevialetExpertControl
+options:
+  createIntermediateGroups: true
+packages:
+  DevialetIOS:
+    path: .
+targets:
+  DevialetExpertControlApp:
+    type: application
+    platform: iOS
+    deploymentTarget: "17.0"
+    sources:
+      - path: DevialetExpertControlApp
+        excludes:
+          - Info.plist
+    settings:
+      base:
+        INFOPLIST_FILE: DevialetExpertControlApp/Info.plist
+        PRODUCT_BUNDLE_IDENTIFIER: com.example.devialetcontrol
+        PRODUCT_NAME: ExPro
+        ASSETCATALOG_COMPILER_APPICON_NAME: AppIcon
+        SWIFT_VERSION: 5.10
+        CODE_SIGN_STYLE: Automatic
+        DEVELOPMENT_TEAM: ""
+    dependencies:
+      - package: DevialetIOS
+        product: DevialetCore
+schemes:
+  DevialetExpertControlApp:
+    build:
+      targets:
+        DevialetExpertControlApp: all
+    run:
+      config: Debug
+    test:
+      config: Debug

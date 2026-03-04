@@ -1,0 +1,360 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 77;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		2222A1630C8591D5DE7D2D88 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = FC5BFD46B6294BB273003373 /* Assets.xcassets */; };
+		5ABAC4E8FC497FFAE54D9793 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2409211EC13C4E59A550A19A /* ContentView.swift */; };
+		62D9165376B62AF88BDEC604 /* DiagnosticsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 28363CBDC540637AC8EEA5F1 /* DiagnosticsView.swift */; };
+		88AE6E387988DECC50134BDD /* DevialetCore in Frameworks */ = {isa = PBXBuildFile; productRef = 896F6204B4045A8179227FB1 /* DevialetCore */; };
+		B46E51794049810EBF53A668 /* DevialetExpertControlApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = A89BA7BC4A685B5AB401487A /* DevialetExpertControlApp.swift */; };
+		FEE03A80DB60B1A7FE738F53 /* AppStateStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = E0A50FED148F1D2DFA1E92E3 /* AppStateStore.swift */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXFileReference section */
+		226EF7CEE87A19216B0244C1 /* ios */ = {isa = PBXFileReference; lastKnownFileType = folder; name = ios; path = .; sourceTree = SOURCE_ROOT; };
+		2409211EC13C4E59A550A19A /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
+		28363CBDC540637AC8EEA5F1 /* DiagnosticsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DiagnosticsView.swift; sourceTree = "<group>"; };
+		7A9976F3C30D5A6A2C12746F /* DevialetExpertControlApp.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = DevialetExpertControlApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		A89BA7BC4A685B5AB401487A /* DevialetExpertControlApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DevialetExpertControlApp.swift; sourceTree = "<group>"; };
+		E0A50FED148F1D2DFA1E92E3 /* AppStateStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppStateStore.swift; sourceTree = "<group>"; };
+		FC5BFD46B6294BB273003373 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		487ABA35E32DEAEF95D0D09F /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				88AE6E387988DECC50134BDD /* DevialetCore in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		036599FB7BC9E5C30D28111A = {
+			isa = PBXGroup;
+			children = (
+				DE552323ABFF4F9FEE162BD3 /* DevialetExpertControlApp */,
+				B0F583C29946D78411334340 /* Packages */,
+				693EE8D176E60412F8A07054 /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		693EE8D176E60412F8A07054 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				7A9976F3C30D5A6A2C12746F /* DevialetExpertControlApp.app */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		B0F583C29946D78411334340 /* Packages */ = {
+			isa = PBXGroup;
+			children = (
+				226EF7CEE87A19216B0244C1 /* ios */,
+			);
+			name = Packages;
+			sourceTree = "<group>";
+		};
+		DE552323ABFF4F9FEE162BD3 /* DevialetExpertControlApp */ = {
+			isa = PBXGroup;
+			children = (
+				E0A50FED148F1D2DFA1E92E3 /* AppStateStore.swift */,
+				FC5BFD46B6294BB273003373 /* Assets.xcassets */,
+				2409211EC13C4E59A550A19A /* ContentView.swift */,
+				A89BA7BC4A685B5AB401487A /* DevialetExpertControlApp.swift */,
+				28363CBDC540637AC8EEA5F1 /* DiagnosticsView.swift */,
+			);
+			path = DevialetExpertControlApp;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		1B62428AB4721B311B55286C /* DevialetExpertControlApp */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = A885ABFE78016D1E9A4E6C74 /* Build configuration list for PBXNativeTarget "DevialetExpertControlApp" */;
+			buildPhases = (
+				1A04633F57057BB1910E0149 /* Sources */,
+				A0F069011B5013D0D4B29AEC /* Resources */,
+				487ABA35E32DEAEF95D0D09F /* Frameworks */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = DevialetExpertControlApp;
+			packageProductDependencies = (
+				896F6204B4045A8179227FB1 /* DevialetCore */,
+			);
+			productName = DevialetExpertControlApp;
+			productReference = 7A9976F3C30D5A6A2C12746F /* DevialetExpertControlApp.app */;
+			productType = "com.apple.product-type.application";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		EED7DBEF972367C35AD6343D /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				BuildIndependentTargetsInParallel = YES;
+				LastUpgradeCheck = 1430;
+				TargetAttributes = {
+					1B62428AB4721B311B55286C = {
+						DevelopmentTeam = "";
+						ProvisioningStyle = Automatic;
+					};
+				};
+			};
+			buildConfigurationList = A73EFB049225A653DBA2F2E5 /* Build configuration list for PBXProject "DevialetExpertControl" */;
+			compatibilityVersion = "Xcode 14.0";
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				Base,
+				en,
+			);
+			mainGroup = 036599FB7BC9E5C30D28111A;
+			minimizedProjectReferenceProxies = 1;
+			packageReferences = (
+				332B152B4D03C666BE2123F0 /* XCLocalSwiftPackageReference "." */,
+			);
+			preferredProjectObjectVersion = 77;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				1B62428AB4721B311B55286C /* DevialetExpertControlApp */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		A0F069011B5013D0D4B29AEC /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				2222A1630C8591D5DE7D2D88 /* Assets.xcassets in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		1A04633F57057BB1910E0149 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				FEE03A80DB60B1A7FE738F53 /* AppStateStore.swift in Sources */,
+				5ABAC4E8FC497FFAE54D9793 /* ContentView.swift in Sources */,
+				B46E51794049810EBF53A668 /* DevialetExpertControlApp.swift in Sources */,
+				62D9165376B62AF88BDEC604 /* DiagnosticsView.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin XCBuildConfiguration section */
+		689966E3D732BF2C3ED5926F /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = "";
+				INFOPLIST_FILE = DevialetExpertControlApp/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.example.devialetcontrol;
+				PRODUCT_NAME = ExPro;
+				SDKROOT = iphoneos;
+				SWIFT_VERSION = 5.1;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		878F69BB439CBC0D34F8156F /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = "";
+				INFOPLIST_FILE = DevialetExpertControlApp/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.example.devialetcontrol;
+				PRODUCT_NAME = ExPro;
+				SDKROOT = iphoneos;
+				SWIFT_VERSION = 5.1;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
+		A094AEA1B56852EDF72C2202 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				MTL_FAST_MATH = YES;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SWIFT_COMPILATION_MODE = wholemodule;
+				SWIFT_OPTIMIZATION_LEVEL = "-O";
+				SWIFT_VERSION = 5.0;
+			};
+			name = Release;
+		};
+		B30FE9FC8EB91FA5AC51D539 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"$(inherited)",
+					"DEBUG=1",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_VERSION = 5.0;
+			};
+			name = Debug;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		A73EFB049225A653DBA2F2E5 /* Build configuration list for PBXProject "DevialetExpertControl" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				B30FE9FC8EB91FA5AC51D539 /* Debug */,
+				A094AEA1B56852EDF72C2202 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+		A885ABFE78016D1E9A4E6C74 /* Build configuration list for PBXNativeTarget "DevialetExpertControlApp" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				689966E3D732BF2C3ED5926F /* Debug */,
+				878F69BB439CBC0D34F8156F /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+/* End XCConfigurationList section */
+
+/* Begin XCLocalSwiftPackageReference section */
+		332B152B4D03C666BE2123F0 /* XCLocalSwiftPackageReference "." */ = {
+			isa = XCLocalSwiftPackageReference;
+			relativePath = .;
+		};
+/* End XCLocalSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		896F6204B4045A8179227FB1 /* DevialetCore */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = DevialetCore;
+		};
+/* End XCSwiftPackageProductDependency section */
+	};
+	rootObject = EED7DBEF972367C35AD6343D /* Project object */;
+}
