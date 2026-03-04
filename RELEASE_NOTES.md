@@ -15,7 +15,3 @@
   - Diagnostics panel and retry flow
 - Added fixture-based unit tests and real-device integration checklist.
 
-## Known limitations in this repo state
-
-- Full iOS build is not executed in this environment because Xcode is not selected (`xcodebuild` unavailable).
-- Use Xcode on macOS with a full iOS SDK installation to build/run on device and TestFlight.
