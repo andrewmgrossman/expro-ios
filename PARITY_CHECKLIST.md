@@ -1,7 +1,5 @@
 # Script Parity Checklist
 
-Mapping from Python controller behavior in `/Users/andrewmg/devialet/devialet_expert_control.py` to iOS implementation in `DevialetCore`.
-
 ## Protocol and status decode
 
 - Python `crc16()` ([devialet_expert_control.py](/Users/andrewmg/devialet/devialet_expert_control.py:41))
