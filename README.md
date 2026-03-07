@@ -1,6 +1,8 @@
 # ExPro: A modern iOS controller app for Devialet Expert Pro amplifiers
 
-This project provides a native iOS implementation for controlling Devialet Expert Pro amplifiers with direct UDP networking.
+This project provides a native iOS implementation for controlling Devialet Expert Pro amplifiers.
+
+![main UI](expro-UI.png) ![settings](expro-UI2.png)
 
 ## Feature coverage
 
