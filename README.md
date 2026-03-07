@@ -4,62 +4,35 @@ This project provides a native iOS implementation for controlling Devialet Exper
 
 ![main UI](expro-UI.png) ![settings](expro-UI2.png)
 
-## Feature coverage
+## Features
 
-- Discovery by listening on UDP `45454`
-- Status decode parity (device name, power, mute, channel, volume, dynamic inputs)
-- Command send on UDP `45455` with 4x send reliability, packet counters, CRC16
-- Power on/off/toggle
-- Mute/unmute/toggle
-- Volume set with clamp to `[-96, 0]` and 0.5 dB steps
-- Channel switch with non-linear mapping and slot 1 hardcoded bytes (`0x3F 0x80`)
-- Cached amplifier IP and cached status via `UserDefaults`
-- Optimistic UI updates and 1s refresh loop while app is active
+- Control power, volume, muting, and input channel
+- Set a custom range for the volume slider
+- Set a custom volume-level button (default: -20 dB)
+- Loads way faster than the official app; possibly less annoying
 
-## Add to Xcode and build
+## Installation
 
-### Option A: Use generated Xcode project
+- TestFlight: link TK
+- Future: App Store
+- Compile, build, and install via Xcode
+
+## Compile, build, and install via Xcode
 
 1. Download everything (hint: on Github, click the down arrow on the green "Code" button,  choose "Download ZIP", and then unzip the archive).
 2. Double-click the file "DevialetExpertControl.xcodeproj" to open it in Xcode.
 3. Go to the "Signing & Capabilities" tab and add your Apple account under the Team dropdown.
 4. Connect your iPhone to your Mac with a cable
-5. In the Privacy & Security settings on the phone, turn on "Developer Mode"
+5. In the IPhone's Privacy & Security settings, turn on "Developer Mode"
 6. Build and run on your phone (Command-R)
 
-Problems with signing or getting the app on your phone? Please consult Google or a local chatbot.
+Problems with signing or getting the app on your phone? Consult Google or a chatbot.
 
-
-### Option B: Generate project with XcodeGen
-
-```bash
-brew install xcodegen
-cd ios
-xcodegen generate
-open DevialetExpertControl.xcodeproj
-```
-
-The generator spec is in `ios/project.yml`.
-
-After generating, continue as above.
-
-### Option C: Manual project setup
-
-1. Open Xcode and create a new iOS App project (SwiftUI, iOS 17+).
-2. Add `DevialetExpertControlApp/*.swift` files and `DevialetExpertControlApp/Info.plist` to the app target.
-3. Add local Swift package dependency pointing to this `ios/` folder.
-4. Link the package product `DevialetCore` to your app target.
-5. Ensure the target uses the provided local network usage description in `Info.plist`.
-
-## Tests
-
-Run from this folder:
-
-```bash
-cd ios
-swift test
-```
 
 ## License
 
-This documentation and code is provided as-is for educational and personal use. Devialet is a trademark of Devialet SAS. This project is not affiliated with or endorsed by Devialet.
+Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the “Software”), to use, copy, modify, publish, distribute, sublicense, and/or sell copies of the Software, for any purpose and without restriction.
+
+THE SOFTWARE IS PROVIDED “AS IS,” WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE, AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY CLAIM, DAMAGES, OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT, OR OTHERWISE, ARISING FROM, OUT OF, OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+
+“Devialet” is a trademark of Devialet SAS. This project is an independent software project and is not affiliated with, endorsed by, sponsored by, or approved by Devialet SAS.
