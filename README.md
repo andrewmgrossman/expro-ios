@@ -2,7 +2,7 @@
 
 This project provides a native iOS implementation for controlling Devialet Expert Pro amplifiers.
 
-![main UI](expro-UI.png) ![settings](expro-UI2.png)
+![main UI](expro-UI.png)![settings](expro-UI2.png)
 
 ## Features
 
