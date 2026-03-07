@@ -43,6 +43,19 @@ final class DevialetProtocolTests: XCTestCase {
         XCTAssertEqual(codec.encodeVolume(db: 0.0), 0x0000)
     }
 
+    func testSetVolumeAcceptsUpToThirtyDb() throws {
+        XCTAssertNoThrow(try codec.makeCommandPacket(for: .setVolume(30.0), status: nil))
+    }
+
+    func testSetVolumeAboveThirtyDbClampsToThirtyDb() throws {
+        let packet = try codec.makeCommandPacket(for: .setVolume(30.5), status: nil)
+        let encoded = codec.encodeVolume(db: 30.0)
+
+        XCTAssertEqual(packet[7], 0x04)
+        XCTAssertEqual(packet[8], UInt8((encoded & 0xFF00) >> 8))
+        XCTAssertEqual(packet[9], UInt8(encoded & 0x00FF))
+    }
+
     func testChannelEncodingParity() throws {
         let status = AmpStatus(
             deviceName: "Expert",

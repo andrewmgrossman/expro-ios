@@ -3,12 +3,10 @@ import SwiftUI
 
 struct ContentView: View {
     @StateObject private var store = AppStateStore()
-    @State private var sliderValue: Double = -20.0
+    @State private var sliderValue: Double = VolumeSettings.defaults.presetDb
     @State private var showingInputPicker = false
+    @State private var showingSettings = false
 
-    private let volumeMinDb: Double = -60.0
-    private let volumeMaxDb: Double = 0.0
-    private let referenceVolumeDb: Double = -20.0
     private let cardRadius: CGFloat = 20
     private let innerControlRadius: CGFloat = 14
 
@@ -50,19 +48,29 @@ struct ContentView: View {
                 inputPickerSheet(status: status)
             }
         }
+        .sheet(isPresented: $showingSettings) {
+            SettingsView(currentSettings: store.volumeSettings) { updated in
+                store.saveVolumeSettings(updated)
+            }
+        }
         .onAppear {
+            store.loadVolumeSettings()
             store.start()
+            sliderValue = store.volumeSettings.clampToSliderRange(sliderValue)
         }
         .onDisappear {
             store.stop()
         }
         .onChange(of: store.status?.volumeDb) { _, newValue in
             if let newValue {
-                let clamped = max(volumeMinDb, min(volumeMaxDb, newValue))
+                let clamped = store.volumeSettings.clampToSliderRange(newValue)
                 withAnimation(.easeOut(duration: 0.18)) {
                     sliderValue = clamped
                 }
             }
+        }
+        .onChange(of: store.volumeSettings) { _, newSettings in
+            sliderValue = newSettings.clampToSliderRange(sliderValue)
         }
         .onChange(of: store.status?.powerOn) { _, powerOn in
             if powerOn == false {
@@ -98,6 +106,17 @@ struct ContentView: View {
                 .lineLimit(1)
 
             Spacer()
+
+            Button {
+                showingSettings = true
+            } label: {
+                Image(systemName: "gearshape")
+                    .font(.system(size: 14, weight: .semibold))
+                    .foregroundStyle(.secondary)
+                    .frame(width: 30, height: 30)
+                    .background(Color(uiColor: .secondarySystemGroupedBackground), in: Circle())
+            }
+            .buttonStyle(.plain)
         }
         .padding(.horizontal, 13)
         .padding(.vertical, 10)
@@ -137,35 +156,26 @@ struct ContentView: View {
                 .contentTransition(.numericText())
                 .foregroundStyle(.primary)
 
-            ZStack(alignment: .leading) {
-                Slider(value: $sliderValue, in: volumeMinDb...volumeMaxDb, step: 0.5)
-                    .tint(.blue)
-                    .onChange(of: sliderValue) { _, newValue in
-                        store.setVolumeDebounced(newValue)
-                    }
-
-                GeometryReader { geo in
-                    let xPosition = tickXPosition(for: referenceVolumeDb, in: geo.size.width)
-                    Capsule()
-                        .fill(Color.secondary.opacity(0.75))
-                        .frame(width: 2, height: 15)
-                        .offset(x: xPosition - 1)
-                        .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .leading)
-                }
-                .allowsHitTesting(false)
+            ArcVolumeControl(
+                value: $sliderValue,
+                range: store.volumeSettings.sliderMinDb...store.volumeSettings.sliderMaxDb,
+                referenceValue: store.volumeSettings.presetDb,
+                accent: .blue
+            ) { newValue in
+                store.setVolumeDebounced(newValue)
             }
-            .frame(height: 22)
+            .frame(height: 332)
 
             HStack(spacing: 10) {
                 volumeArrowButton(systemName: "arrow.left") {
-                    let target = max(volumeMinDb, sliderValue - 1.0)
+                    let target = max(store.volumeSettings.sliderMinDb, sliderValue - store.volumeSettings.volumeStepDb)
                     sliderValue = target
-                    store.setVolumeImmediate(target, min: volumeMinDb, max: volumeMaxDb)
+                    store.setVolumeImmediate(target, min: store.volumeSettings.sliderMinDb, max: store.volumeSettings.sliderMaxDb)
                 }
 
-                Button("-20") {
-                    sliderValue = referenceVolumeDb
-                    store.setVolumeImmediate(referenceVolumeDb, min: volumeMinDb, max: volumeMaxDb)
+                Button(dbButtonLabel(store.volumeSettings.presetDb)) {
+                    sliderValue = store.volumeSettings.presetDb
+                    store.setVolumeImmediate(store.volumeSettings.presetDb, min: store.volumeSettings.sliderMinDb, max: store.volumeSettings.sliderMaxDb)
                 }
                 .font(.system(.headline, design: .rounded).weight(.semibold))
                 .frame(width: 74)
@@ -174,9 +184,9 @@ struct ContentView: View {
                 .buttonStyle(PressableControlStyle())
 
                 volumeArrowButton(systemName: "arrow.right") {
-                    let target = min(volumeMaxDb, sliderValue + 1.0)
+                    let target = min(store.volumeSettings.sliderMaxDb, sliderValue + store.volumeSettings.volumeStepDb)
                     sliderValue = target
-                    store.setVolumeImmediate(target, min: volumeMinDb, max: volumeMaxDb)
+                    store.setVolumeImmediate(target, min: store.volumeSettings.sliderMinDb, max: store.volumeSettings.sliderMaxDb)
                 }
             }
         }
@@ -258,14 +268,15 @@ struct ContentView: View {
         .buttonStyle(PressableControlStyle())
     }
 
-    private func tickXPosition(for value: Double, in width: CGFloat) -> CGFloat {
-        let clamped = max(volumeMinDb, min(volumeMaxDb, value))
-        let fraction = (clamped - volumeMinDb) / (volumeMaxDb - volumeMinDb)
-        return width * fraction
-    }
-
     private func currentInputName(status: AmpStatus) -> String {
         status.channels.first(where: { $0.slot == status.currentChannel })?.name ?? "Unknown"
+    }
+
+    private func dbButtonLabel(_ value: Double) -> String {
+        if abs(value.rounded() - value) < 0.001 {
+            return String(format: "%.0f", value)
+        }
+        return String(format: "%.1f", value)
     }
 
     private func inputPickerSheet(status: AmpStatus) -> some View {
@@ -305,4 +316,135 @@ private struct PressableControlStyle: ButtonStyle {
 
 #Preview {
     ContentView()
+}
+
+private struct ArcVolumeControl: View {
+    @Binding var value: Double
+    let range: ClosedRange<Double>
+    let referenceValue: Double
+    let accent: Color
+    let onChange: (Double) -> Void
+
+    private let startDegrees: Double = 190
+    private let endDegrees: Double = 350
+    private let majorTickCount: Int = 6
+    private let trackWidth: CGFloat = 12
+
+    var body: some View {
+        GeometryReader { geo in
+            let width = geo.size.width
+            let radius = max(120, (width / 2.0) - 16)
+            let center = CGPoint(x: width / 2.0, y: radius + 20)
+
+            let currentDegrees = degrees(for: value)
+            let referenceDegrees = degrees(for: referenceValue)
+
+            ZStack {
+                arcPath(center: center, radius: radius, start: startDegrees, end: endDegrees)
+                    .stroke(Color.secondary.opacity(0.20), style: StrokeStyle(lineWidth: trackWidth, lineCap: .round))
+
+                arcPath(center: center, radius: radius, start: startDegrees, end: currentDegrees)
+                    .stroke(accent, style: StrokeStyle(lineWidth: trackWidth, lineCap: .round))
+
+                // Subtle highlight to make the active segment feel polished.
+                arcPath(center: center, radius: radius - 1, start: startDegrees, end: currentDegrees)
+                    .stroke(Color.white.opacity(0.45), style: StrokeStyle(lineWidth: 2, lineCap: .round))
+
+                // Major ticks only, intentionally thin.
+                ForEach(0...majorTickCount, id: \.self) { index in
+                    let t = Double(index) / Double(majorTickCount)
+                    let degrees = startDegrees + ((endDegrees - startDegrees) * t)
+                    let start = point(center: center, radius: radius - 17, degrees: degrees)
+                    let end = point(center: center, radius: radius + 9, degrees: degrees)
+                    Path { path in
+                        path.move(to: start)
+                        path.addLine(to: end)
+                    }
+                    .stroke(Color.secondary.opacity(0.58), style: StrokeStyle(lineWidth: 1, lineCap: .round))
+                }
+
+                // Reference marker for the preset button level.
+                let referenceStart = point(center: center, radius: radius - 18, degrees: referenceDegrees)
+                let referenceEnd = point(center: center, radius: radius + 11, degrees: referenceDegrees)
+                Path { path in
+                    path.move(to: referenceStart)
+                    path.addLine(to: referenceEnd)
+                }
+                .stroke(Color.secondary.opacity(0.78), style: StrokeStyle(lineWidth: 2, lineCap: .round))
+
+                let thumb = point(center: center, radius: radius, degrees: currentDegrees)
+                Circle()
+                    .fill(Color(uiColor: .systemBackground))
+                    .frame(width: 24, height: 24)
+                    .overlay(
+                        Circle()
+                            .stroke(accent, lineWidth: 3)
+                    )
+                    .overlay(
+                        Circle()
+                            .fill(accent)
+                            .frame(width: 8, height: 8)
+                    )
+                    .position(thumb)
+                    .shadow(color: Color.black.opacity(0.16), radius: 6, y: 2)
+            }
+            .contentShape(Rectangle())
+            .gesture(
+                DragGesture(minimumDistance: 0)
+                    .onChanged { drag in
+                        let mapped = value(for: drag.location, center: center)
+                        value = mapped
+                        onChange(mapped)
+                    }
+            )
+            .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
+            .clipped()
+        }
+    }
+
+    private func arcPath(center: CGPoint, radius: CGFloat, start: Double, end: Double) -> Path {
+        var path = Path()
+        let steps = 120
+        for step in 0...steps {
+            let t = Double(step) / Double(steps)
+            let degrees = start + ((end - start) * t)
+            let pt = point(center: center, radius: radius, degrees: degrees)
+            if step == 0 {
+                path.move(to: pt)
+            } else {
+                path.addLine(to: pt)
+            }
+        }
+        return path
+    }
+
+    private func point(center: CGPoint, radius: CGFloat, degrees: Double) -> CGPoint {
+        let radians = degrees * .pi / 180.0
+        return CGPoint(
+            x: center.x + (CGFloat(Foundation.cos(radians)) * radius),
+            y: center.y + (CGFloat(Foundation.sin(radians)) * radius)
+        )
+    }
+
+    private func degrees(for value: Double) -> Double {
+        let clamped = min(max(value, range.lowerBound), range.upperBound)
+        let fraction = (clamped - range.lowerBound) / (range.upperBound - range.lowerBound)
+        return startDegrees + ((endDegrees - startDegrees) * fraction)
+    }
+
+    private func value(for location: CGPoint, center: CGPoint) -> Double {
+        let radians = Foundation.atan2(
+            Double(location.y - center.y),
+            Double(location.x - center.x)
+        )
+        var degrees = radians * 180.0 / .pi
+        if degrees < 0 {
+            degrees += 360
+        }
+
+        let clampedDegrees = min(max(degrees, startDegrees), endDegrees)
+        let fraction = (clampedDegrees - startDegrees) / (endDegrees - startDegrees)
+        let raw = range.lowerBound + (fraction * (range.upperBound - range.lowerBound))
+        return (raw * 2.0).rounded() / 2.0
+    }
 }

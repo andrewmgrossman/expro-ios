@@ -4,19 +4,30 @@ import SwiftUI
 
 @MainActor
 final class AppStateStore: ObservableObject {
+    private enum DefaultsKey {
+        static let volumeSettings = "expro.volume.settings"
+    }
+
     @Published var status: AmpStatus?
     @Published var isConnected = false
     @Published var isSyncing = false
     @Published var errorMessage: String?
     @Published var diagnostics: [String] = []
+    @Published var volumeSettings: VolumeSettings
 
     private let controller: AmpControlling
+    private let userDefaults: UserDefaults
     private var streamTask: Task<Void, Never>?
     private var refreshTask: Task<Void, Never>?
     private var volumeTask: Task<Void, Never>?
 
-    init(controller: AmpControlling = DevialetExpertControllerIOS()) {
+    init(
+        controller: AmpControlling = DevialetExpertControllerIOS(),
+        userDefaults: UserDefaults = .standard
+    ) {
         self.controller = controller
+        self.userDefaults = userDefaults
+        self.volumeSettings = Self.loadSettings(from: userDefaults)
     }
 
     func start() {
@@ -28,6 +39,7 @@ final class AppStateStore: ObservableObject {
             guard let self else { return }
             for await update in stream {
                 status = update
+                clampVolumeToSettingsIfNeeded(sendCommandIfChanged: false)
                 isConnected = true
                 if errorMessage != nil {
                     errorMessage = nil
@@ -67,6 +79,7 @@ final class AppStateStore: ObservableObject {
         do {
             let fresh = try await controller.getCurrentStatus(timeout: timeout)
             status = fresh
+            clampVolumeToSettingsIfNeeded(sendCommandIfChanged: false)
             isConnected = true
         } catch {
             isConnected = false
@@ -88,7 +101,8 @@ final class AppStateStore: ObservableObject {
     }
 
     func setVolumeDebounced(_ value: Double) {
-        let normalized = SafetyPolicy.normalizeToHalfDbStep(value)
+        let clamped = volumeSettings.clampToSliderRange(value)
+        let normalized = SafetyPolicy.normalizeToHalfDbStep(clamped)
 
         updateLocalVolume(normalized)
 
@@ -103,12 +117,29 @@ final class AppStateStore: ObservableObject {
 
     func setVolumeImmediate(_ value: Double, min minValue: Double, max maxValue: Double) {
         volumeTask?.cancel()
-        let clamped = max(minValue, min(maxValue, value))
+        let boundsClamped = max(minValue, min(maxValue, value))
+        let clamped = volumeSettings.clampToSliderRange(boundsClamped)
         let normalized = SafetyPolicy.normalizeToHalfDbStep(clamped)
         updateLocalVolume(normalized)
 
         let optimisticText = String(format: "Volume set to %.1f dB", normalized)
         runCommand(.setVolume(normalized), optimisticText: optimisticText)
+    }
+
+    func loadVolumeSettings() {
+        volumeSettings = Self.loadSettings(from: userDefaults)
+        clampVolumeToSettingsIfNeeded(sendCommandIfChanged: false)
+    }
+
+    func saveVolumeSettings(_ settings: VolumeSettings) {
+        let normalized = settings.normalized()
+        volumeSettings = normalized
+
+        if let encoded = try? JSONEncoder().encode(normalized) {
+            userDefaults.set(encoded, forKey: DefaultsKey.volumeSettings)
+        }
+
+        clampVolumeToSettingsIfNeeded(sendCommandIfChanged: true)
     }
 
     private func runCommand(_ command: AmpCommand, optimisticText: String) {
@@ -145,5 +176,28 @@ final class AppStateStore: ObservableObject {
             current.lastUpdated = Date()
             status = current
         }
+    }
+
+    private func clampVolumeToSettingsIfNeeded(sendCommandIfChanged: Bool) {
+        guard let currentStatus = status else { return }
+
+        let clamped = volumeSettings.clampToSliderRange(currentStatus.volumeDb)
+        let normalized = SafetyPolicy.normalizeToHalfDbStep(clamped)
+        guard abs(normalized - currentStatus.volumeDb) > 0.001 else { return }
+
+        updateLocalVolume(normalized)
+
+        guard sendCommandIfChanged, currentStatus.powerOn else { return }
+        let optimisticText = String(format: "Volume adjusted to %.1f dB", normalized)
+        runCommand(.setVolume(normalized), optimisticText: optimisticText)
+    }
+
+    private static func loadSettings(from userDefaults: UserDefaults) -> VolumeSettings {
+        guard let data = userDefaults.data(forKey: DefaultsKey.volumeSettings),
+              let decoded = try? JSONDecoder().decode(VolumeSettings.self, from: data) else {
+            return VolumeSettings.defaults
+        }
+
+        return decoded.normalized()
     }
 }

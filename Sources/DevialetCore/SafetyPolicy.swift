@@ -2,7 +2,7 @@ import Foundation
 
 public enum SafetyPolicy {
     public static let minVolumeDb: Double = -96.0
-    public static let maxVolumeDb: Double = 0.0
+    public static let maxVolumeDb: Double = 30.0
     public static let volumeDebounceInterval: TimeInterval = 0.25
 
     public static func clampVolume(_ value: Double) -> Double {

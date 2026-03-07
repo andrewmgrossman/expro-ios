@@ -24,7 +24,7 @@ public enum AmpControlError: Error, LocalizedError, Sendable {
         case .missingAmplifierIPAddress:
             return "No amplifier IP address available. Discover amplifier first."
         case .invalidVolume(let db):
-            return "Invalid volume \(db). Expected between -96.0 and 0.0 dB."
+            return "Invalid volume \(db). Expected between -96.0 and 30.0 dB."
         case .invalidChannel(let channel):
             return "Invalid or unavailable channel \(channel)."
         case .noKnownStatus:

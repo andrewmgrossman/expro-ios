@@ -3,24 +3,28 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 77;
+	objectVersion = 63;
 	objects = {
 
 /* Begin PBXBuildFile section */
+		0E85B58A8AD74B41A3EE9E21 /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D9B22A8B8E8F480A96C379F4 /* SettingsView.swift */; };
 		2222A1630C8591D5DE7D2D88 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = FC5BFD46B6294BB273003373 /* Assets.xcassets */; };
 		5ABAC4E8FC497FFAE54D9793 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2409211EC13C4E59A550A19A /* ContentView.swift */; };
 		62D9165376B62AF88BDEC604 /* DiagnosticsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 28363CBDC540637AC8EEA5F1 /* DiagnosticsView.swift */; };
+		7CE9D116CB044235A0D40A17 /* VolumeSettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E2C8B7FB00A4D769655DA11 /* VolumeSettings.swift */; };
 		88AE6E387988DECC50134BDD /* DevialetCore in Frameworks */ = {isa = PBXBuildFile; productRef = 896F6204B4045A8179227FB1 /* DevialetCore */; };
 		B46E51794049810EBF53A668 /* DevialetExpertControlApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = A89BA7BC4A685B5AB401487A /* DevialetExpertControlApp.swift */; };
 		FEE03A80DB60B1A7FE738F53 /* AppStateStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = E0A50FED148F1D2DFA1E92E3 /* AppStateStore.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		226EF7CEE87A19216B0244C1 /* ios */ = {isa = PBXFileReference; lastKnownFileType = folder; name = ios; path = .; sourceTree = SOURCE_ROOT; };
+		226EF7CEE87A19216B0244C1 /*  */ = {isa = PBXFileReference; lastKnownFileType = wrapper; name = ""; sourceTree = SOURCE_ROOT; };
 		2409211EC13C4E59A550A19A /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
 		28363CBDC540637AC8EEA5F1 /* DiagnosticsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DiagnosticsView.swift; sourceTree = "<group>"; };
-		7A9976F3C30D5A6A2C12746F /* DevialetExpertControlApp.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = DevialetExpertControlApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		2E2C8B7FB00A4D769655DA11 /* VolumeSettings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VolumeSettings.swift; sourceTree = "<group>"; };
+		7A9976F3C30D5A6A2C12746F /* ExPro.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ExPro.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		A89BA7BC4A685B5AB401487A /* DevialetExpertControlApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DevialetExpertControlApp.swift; sourceTree = "<group>"; };
+		D9B22A8B8E8F480A96C379F4 /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
 		E0A50FED148F1D2DFA1E92E3 /* AppStateStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppStateStore.swift; sourceTree = "<group>"; };
 		FC5BFD46B6294BB273003373 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -40,7 +44,7 @@
 		036599FB7BC9E5C30D28111A = {
 			isa = PBXGroup;
 			children = (
-				DE552323ABFF4F9FEE162BD3 /* DevialetExpertControlApp */,
+				DE552323ABFF4F9FEE162BD3 /* ExProApp */,
 				B0F583C29946D78411334340 /* Packages */,
 				693EE8D176E60412F8A07054 /* Products */,
 			);
@@ -49,7 +53,7 @@
 		693EE8D176E60412F8A07054 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				7A9976F3C30D5A6A2C12746F /* DevialetExpertControlApp.app */,
+				7A9976F3C30D5A6A2C12746F /* ExPro.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -57,12 +61,12 @@
 		B0F583C29946D78411334340 /* Packages */ = {
 			isa = PBXGroup;
 			children = (
-				226EF7CEE87A19216B0244C1 /* ios */,
+				226EF7CEE87A19216B0244C1 /*  */,
 			);
 			name = Packages;
 			sourceTree = "<group>";
 		};
-		DE552323ABFF4F9FEE162BD3 /* DevialetExpertControlApp */ = {
+		DE552323ABFF4F9FEE162BD3 /* ExProApp */ = {
 			isa = PBXGroup;
 			children = (
 				E0A50FED148F1D2DFA1E92E3 /* AppStateStore.swift */,
@@ -70,8 +74,10 @@
 				2409211EC13C4E59A550A19A /* ContentView.swift */,
 				A89BA7BC4A685B5AB401487A /* DevialetExpertControlApp.swift */,
 				28363CBDC540637AC8EEA5F1 /* DiagnosticsView.swift */,
+				D9B22A8B8E8F480A96C379F4 /* SettingsView.swift */,
+				2E2C8B7FB00A4D769655DA11 /* VolumeSettings.swift */,
 			);
-			path = DevialetExpertControlApp;
+			path = ExProApp;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -94,7 +100,7 @@
 				896F6204B4045A8179227FB1 /* DevialetCore */,
 			);
 			productName = DevialetExpertControlApp;
-			productReference = 7A9976F3C30D5A6A2C12746F /* DevialetExpertControlApp.app */;
+			productReference = 7A9976F3C30D5A6A2C12746F /* ExPro.app */;
 			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */
@@ -107,12 +113,11 @@
 				LastUpgradeCheck = 1430;
 				TargetAttributes = {
 					1B62428AB4721B311B55286C = {
-						DevelopmentTeam = "";
 						ProvisioningStyle = Automatic;
 					};
 				};
 			};
-			buildConfigurationList = A73EFB049225A653DBA2F2E5 /* Build configuration list for PBXProject "DevialetExpertControl" */;
+			buildConfigurationList = A73EFB049225A653DBA2F2E5 /* Build configuration list for PBXProject "ExPro" */;
 			compatibilityVersion = "Xcode 14.0";
 			developmentRegion = en;
 			hasScannedForEncodings = 0;
@@ -125,7 +130,6 @@
 			packageReferences = (
 				332B152B4D03C666BE2123F0 /* XCLocalSwiftPackageReference "." */,
 			);
-			preferredProjectObjectVersion = 77;
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
@@ -154,6 +158,8 @@
 				5ABAC4E8FC497FFAE54D9793 /* ContentView.swift in Sources */,
 				B46E51794049810EBF53A668 /* DevialetExpertControlApp.swift in Sources */,
 				62D9165376B62AF88BDEC604 /* DiagnosticsView.swift in Sources */,
+				0E85B58A8AD74B41A3EE9E21 /* SettingsView.swift in Sources */,
+				7CE9D116CB044235A0D40A17 /* VolumeSettings.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -166,14 +172,18 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				CODE_SIGN_STYLE = Automatic;
-				DEVELOPMENT_TEAM = "";
-				INFOPLIST_FILE = DevialetExpertControlApp/Info.plist;
+				CURRENT_PROJECT_VERSION = 4;
+				DEVELOPMENT_TEAM = 92669V9N88;
+				INFOPLIST_FILE = ExProApp/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = ExPro;
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.entertainment";
 				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.example.devialetcontrol;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.andrewmgrossman.expro;
 				PRODUCT_NAME = ExPro;
 				SDKROOT = iphoneos;
 				SWIFT_VERSION = 5.1;
@@ -187,14 +197,18 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				CODE_SIGN_STYLE = Automatic;
-				DEVELOPMENT_TEAM = "";
-				INFOPLIST_FILE = DevialetExpertControlApp/Info.plist;
+				CURRENT_PROJECT_VERSION = 4;
+				DEVELOPMENT_TEAM = 92669V9N88;
+				INFOPLIST_FILE = ExProApp/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = ExPro;
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.entertainment";
 				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.example.devialetcontrol;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.andrewmgrossman.expro;
 				PRODUCT_NAME = ExPro;
 				SDKROOT = iphoneos;
 				SWIFT_VERSION = 5.1;
@@ -322,7 +336,7 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		A73EFB049225A653DBA2F2E5 /* Build configuration list for PBXProject "DevialetExpertControl" */ = {
+		A73EFB049225A653DBA2F2E5 /* Build configuration list for PBXProject "ExPro" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				B30FE9FC8EB91FA5AC51D539 /* Debug */,

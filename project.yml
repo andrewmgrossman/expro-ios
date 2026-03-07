@@ -1,4 +1,4 @@
-name: DevialetExpertControl
+name: ExPro
 options:
   createIntermediateGroups: true
 packages:
@@ -10,13 +10,13 @@ targets:
     platform: iOS
     deploymentTarget: "17.0"
     sources:
-      - path: DevialetExpertControlApp
+      - path: ExProApp
         excludes:
           - Info.plist
     settings:
       base:
-        INFOPLIST_FILE: DevialetExpertControlApp/Info.plist
-        PRODUCT_BUNDLE_IDENTIFIER: com.example.devialetcontrol
+        INFOPLIST_FILE: ExProApp/Info.plist
+        PRODUCT_BUNDLE_IDENTIFIER: com.example.expro
         PRODUCT_NAME: ExPro
         ASSETCATALOG_COMPILER_APPICON_NAME: AppIcon
         SWIFT_VERSION: 5.10
