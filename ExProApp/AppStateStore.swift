@@ -89,11 +89,23 @@ final class AppStateStore: ObservableObject {
     }
 
     func powerToggle() {
-        runCommand(.togglePower, optimisticText: "Power toggle sent")
+        if let currentStatus = status {
+            let command: AmpCommand = currentStatus.powerOn ? .powerOff : .powerOn
+            let optimisticText = currentStatus.powerOn ? "Power off sent" : "Power on sent"
+            runCommand(command, optimisticText: optimisticText)
+        } else {
+            runCommand(.togglePower, optimisticText: "Power toggle sent")
+        }
     }
 
     func muteToggle() {
-        runCommand(.toggleMute, optimisticText: "Mute toggle sent")
+        if let currentStatus = status {
+            let command: AmpCommand = currentStatus.muted ? .unmute : .mute
+            let optimisticText = currentStatus.muted ? "Unmute sent" : "Mute sent"
+            runCommand(command, optimisticText: optimisticText)
+        } else {
+            runCommand(.toggleMute, optimisticText: "Mute toggle sent")
+        }
     }
 
     func selectChannel(_ slot: Int) {
