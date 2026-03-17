@@ -1,0 +1,12 @@
+{
+  "/Users/andrewmg/devialet/expro-ios/Sources/DevialetCore/DevialetExpertControllerIOS.swift" : {
+    "abi-baseline-json" : "/Users/andrewmg/devialet/expro-ios/build/DevialetIOS.build/Release-iphoneos/DevialetCore.build/Objects-normal/arm64/DevialetCore.abi.json",
+    "const-values" : "/Users/andrewmg/devialet/expro-ios/build/DevialetIOS.build/Release-iphoneos/DevialetCore.build/Objects-normal/arm64/DevialetCore-primary.swiftconstvalues",
+    "dependencies" : "/Users/andrewmg/devialet/expro-ios/build/DevialetIOS.build/Release-iphoneos/DevialetCore.build/Objects-normal/arm64/DevialetCore-primary.d",
+    "diagnostics" : "/Users/andrewmg/devialet/expro-ios/build/DevialetIOS.build/Release-iphoneos/DevialetCore.build/Objects-normal/arm64/DevialetCore-primary.dia",
+    "objc-header" : "/Users/andrewmg/devialet/expro-ios/build/DevialetIOS.build/Release-iphoneos/DevialetCore.build/Objects-normal/arm64/DevialetCore-Swift.h",
+    "swiftdoc" : "/Users/andrewmg/devialet/expro-ios/build/DevialetIOS.build/Release-iphoneos/DevialetCore.build/Objects-normal/arm64/DevialetCore.swiftdoc",
+    "swiftmodule" : "/Users/andrewmg/devialet/expro-ios/build/DevialetIOS.build/Release-iphoneos/DevialetCore.build/Objects-normal/arm64/DevialetCore.swiftmodule",
+    "swiftsourceinfo" : "/Users/andrewmg/devialet/expro-ios/build/DevialetIOS.build/Release-iphoneos/DevialetCore.build/Objects-normal/arm64/DevialetCore.swiftsourceinfo"
+  }
+}

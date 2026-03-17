@@ -325,6 +325,8 @@ private struct ArcVolumeControl: View {
     let accent: Color
     let onChange: (Double) -> Void
 
+    @State private var gestureStartedOnArc = false
+
     private let startDegrees: Double = 190
     private let endDegrees: Double = 350
     private let majorTickCount: Int = 6
@@ -392,9 +394,16 @@ private struct ArcVolumeControl: View {
             .gesture(
                 DragGesture(minimumDistance: 0)
                     .onChanged { drag in
+                        if !gestureStartedOnArc {
+                            guard isNearArc(location: drag.startLocation, center: center, radius: radius) else { return }
+                            gestureStartedOnArc = true
+                        }
                         let mapped = value(for: drag.location, center: center)
                         value = mapped
                         onChange(mapped)
+                    }
+                    .onEnded { _ in
+                        gestureStartedOnArc = false
                     }
             )
             .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
@@ -430,6 +439,20 @@ private struct ArcVolumeControl: View {
         let clamped = min(max(value, range.lowerBound), range.upperBound)
         let fraction = (clamped - range.lowerBound) / (range.upperBound - range.lowerBound)
         return startDegrees + ((endDegrees - startDegrees) * fraction)
+    }
+
+    private func isNearArc(location: CGPoint, center: CGPoint, radius: CGFloat) -> Bool {
+        let dx = Double(location.x - center.x)
+        let dy = Double(location.y - center.y)
+        let distance = sqrt(dx * dx + dy * dy)
+        let tolerance = Double(trackWidth / 2) + 20
+
+        guard abs(distance - Double(radius)) <= tolerance else { return false }
+
+        var degrees = Foundation.atan2(dy, dx) * 180.0 / .pi
+        if degrees < 0 { degrees += 360 }
+        let angularPadding = 8.0
+        return degrees >= (startDegrees - angularPadding) && degrees <= (endDegrees + angularPadding)
     }
 
     private func value(for location: CGPoint, center: CGPoint) -> Double {
