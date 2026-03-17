@@ -20,6 +20,7 @@ final class AppStateStore: ObservableObject {
     private var streamTask: Task<Void, Never>?
     private var refreshTask: Task<Void, Never>?
     private var volumeTask: Task<Void, Never>?
+    private var lastStreamUpdate: Date = .distantPast
 
     init(
         controller: AmpControlling = DevialetExpertControllerIOS(),
@@ -38,6 +39,7 @@ final class AppStateStore: ObservableObject {
         streamTask = Task { [weak self] in
             guard let self else { return }
             for await update in stream {
+                lastStreamUpdate = Date()
                 status = update
                 clampVolumeToSettingsIfNeeded(sendCommandIfChanged: false)
                 isConnected = true
@@ -78,8 +80,11 @@ final class AppStateStore: ObservableObject {
 
         do {
             let fresh = try await controller.getCurrentStatus(timeout: timeout)
-            status = fresh
-            clampVolumeToSettingsIfNeeded(sendCommandIfChanged: false)
+            let streamIsStale = Date().timeIntervalSince(lastStreamUpdate) > 3.0
+            if streamIsStale {
+                status = fresh
+                clampVolumeToSettingsIfNeeded(sendCommandIfChanged: false)
+            }
             isConnected = true
         } catch {
             isConnected = false
