@@ -13,7 +13,7 @@ This project provides a native iOS implementation for controlling Devialet Exper
 
 ## Installation
 
-- TestFlight: link TK
+- TestFlight (for iOS installation): [here](https://testflight.apple.com/join/1Ytqhwec)
 - Future: App Store
 - Compile, build, and install via Xcode
 
