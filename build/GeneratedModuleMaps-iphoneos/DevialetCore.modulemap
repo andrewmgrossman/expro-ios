@@ -1,4 +1,0 @@
-module DevialetCore {
-header "DevialetCore-Swift.h"
-export *
-}

@@ -1,6 +1,0 @@
-Target dependency graph (3 targets)
-Target 'DevialetExpertControlApp' in project 'ExPro'
-➜ Explicit dependency on target 'DevialetCore' in project 'DevialetIOS'
-Target 'DevialetCore' in project 'DevialetIOS'
-➜ Explicit dependency on target 'DevialetCore' in project 'DevialetIOS'
-Target 'DevialetCore' in project 'DevialetIOS' (no dependencies)
