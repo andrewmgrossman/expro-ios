@@ -70,8 +70,9 @@ final class DevialetProtocolTests: XCTestCase {
         try assertChannel(slot: 0, expectedByte8: 0xFF, expectedByte9: 0xE0, status: status)
         try assertChannel(slot: 1, expectedByte8: 0x3F, expectedByte9: 0x80, status: status)
         try assertChannel(slot: 2, expectedByte8: 0x40, expectedByte9: 0x00, status: status)
-        try assertChannel(slot: 3, expectedByte8: 0x40, expectedByte9: 0x40, status: status)
+        try assertChannel(slot: 3, expectedByte8: 0x40, expectedByte9: 0x60, status: status)
         try assertChannel(slot: 4, expectedByte8: 0x40, expectedByte9: 0x80, status: status)
+        try assertChannel(slot: 5, expectedByte8: 0x40, expectedByte9: 0xA0, status: status)
         try assertChannel(slot: 8, expectedByte8: 0x41, expectedByte9: 0x00, status: status)
         try assertChannel(slot: 14, expectedByte8: 0x41, expectedByte9: 0x60, status: status)
     }

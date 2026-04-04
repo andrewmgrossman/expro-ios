@@ -1,12 +1,61 @@
 import SwiftUI
+import DevialetCore
 
 struct DiagnosticsView: View {
+    let status: AmpStatus?
+    let controllerDiagnostics: AmpControllerDiagnostics
     let diagnostics: [String]
     let errorMessage: String?
 
     var body: some View {
         NavigationStack {
             List {
+                Section("Connection") {
+                    LabeledContent("Listener") {
+                        Text(controllerDiagnostics.listenerActive ? "Active" : "Inactive")
+                    }
+                    LabeledContent("Last Packet") {
+                        Text(lastPacketText)
+                    }
+                    LabeledContent("Stream Health") {
+                        Text(streamHealthText)
+                    }
+                    LabeledContent("Listener Restarts") {
+                        Text("\(controllerDiagnostics.listenerRestartCount)")
+                    }
+                    if let ip = controllerDiagnostics.lastKnownIPAddress {
+                        LabeledContent("Amp IP") {
+                            Text(ip)
+                                .monospaced()
+                        }
+                    }
+                }
+
+                Section("Current Source") {
+                    LabeledContent("Slot") {
+                        Text(status.map { "\($0.currentChannel)" } ?? "Unknown")
+                    }
+                    LabeledContent("Name") {
+                        Text(currentSourceName)
+                    }
+                }
+
+                if let lastCommand = controllerDiagnostics.lastCommand {
+                    Section("Last Command") {
+                        LabeledContent("Summary") {
+                            Text(lastCommand.summary)
+                        }
+                        LabeledContent("State") {
+                            Text(lastCommand.state.rawValue.capitalized)
+                        }
+                        if let confirmedAt = lastCommand.confirmedAt {
+                            LabeledContent("Confirmed") {
+                                Text(confirmedAt.formatted(date: .omitted, time: .standard))
+                            }
+                        }
+                    }
+                }
+
                 if let errorMessage {
                     Section("Current Error") {
                         Text(errorMessage)
@@ -37,8 +86,29 @@ struct DiagnosticsView: View {
             .navigationBarTitleDisplayMode(.inline)
         }
     }
+
+    private var currentSourceName: String {
+        guard let status else { return "Unknown" }
+        return status.channels.first(where: { $0.slot == status.currentChannel })?.name ?? "Unknown"
+    }
+
+    private var lastPacketText: String {
+        guard let lastPacketAt = controllerDiagnostics.lastRealPacketAt else { return "No packet yet" }
+        let age = max(0, Date().timeIntervalSince(lastPacketAt))
+        return "\(lastPacketAt.formatted(date: .omitted, time: .standard)) (\(String(format: "%.1fs", age)) ago)"
+    }
+
+    private var streamHealthText: String {
+        guard let lastPacketAt = controllerDiagnostics.lastRealPacketAt else { return "Stale" }
+        return Date().timeIntervalSince(lastPacketAt) <= 3.0 ? "Healthy" : "Stale"
+    }
 }
 
 #Preview {
-    DiagnosticsView(diagnostics: ["[12:00:00] Status stream started"], errorMessage: nil)
+    DiagnosticsView(
+        status: nil,
+        controllerDiagnostics: AmpControllerDiagnostics(),
+        diagnostics: ["[12:00:00] Status stream started"],
+        errorMessage: nil
+    )
 }

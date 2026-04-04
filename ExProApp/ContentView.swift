@@ -6,6 +6,7 @@ struct ContentView: View {
     @State private var sliderValue: Double = VolumeSettings.defaults.presetDb
     @State private var showingInputPicker = false
     @State private var showingSettings = false
+    @State private var showingDiagnostics = false
 
     private let cardRadius: CGFloat = 20
     private let innerControlRadius: CGFloat = 14
@@ -52,6 +53,14 @@ struct ContentView: View {
             SettingsView(currentSettings: store.volumeSettings) { updated in
                 store.saveVolumeSettings(updated)
             }
+        }
+        .sheet(isPresented: $showingDiagnostics) {
+            DiagnosticsView(
+                status: store.status,
+                controllerDiagnostics: store.controllerDiagnostics,
+                diagnostics: store.diagnostics,
+                errorMessage: store.errorMessage
+            )
         }
         .onAppear {
             store.loadVolumeSettings()
@@ -106,6 +115,17 @@ struct ContentView: View {
                 .lineLimit(1)
 
             Spacer()
+
+            Button {
+                showingDiagnostics = true
+            } label: {
+                Image(systemName: "waveform.path.ecg")
+                    .font(.system(size: 14, weight: .semibold))
+                    .foregroundStyle(.secondary)
+                    .frame(width: 30, height: 30)
+                    .background(Color(uiColor: .secondarySystemGroupedBackground), in: Circle())
+            }
+            .buttonStyle(.plain)
 
             Button {
                 showingSettings = true

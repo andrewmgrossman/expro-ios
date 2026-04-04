@@ -60,9 +60,16 @@ public enum AmpCommand: Sendable, Equatable {
     case setChannel(Int)
 }
 
-public protocol AmpControlling: AnyObject {
+public protocol AmpControlling: AnyObject, Sendable {
     func discover(timeout: TimeInterval) async throws -> AmpStatus
-    func getCurrentStatus(timeout: TimeInterval) async throws -> AmpStatus
+    func getCurrentStatus(timeout: TimeInterval, requireLiveData: Bool) async throws -> AmpStatus
     func startStatusStream() -> AsyncStream<AmpStatus>
     func send(_ command: AmpCommand) async throws
+    func currentDiagnostics() -> AmpControllerDiagnostics
+}
+
+public extension AmpControlling {
+    func getCurrentStatus(timeout: TimeInterval = 2.0) async throws -> AmpStatus {
+        try await getCurrentStatus(timeout: timeout, requireLiveData: false)
+    }
 }

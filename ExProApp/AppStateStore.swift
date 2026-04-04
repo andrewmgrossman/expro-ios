@@ -13,6 +13,7 @@ final class AppStateStore: ObservableObject {
     @Published var isSyncing = false
     @Published var errorMessage: String?
     @Published var diagnostics: [String] = []
+    @Published var controllerDiagnostics = AmpControllerDiagnostics()
     @Published var volumeSettings: VolumeSettings
 
     private let controller: AmpControlling
@@ -21,6 +22,9 @@ final class AppStateStore: ObservableObject {
     private var refreshTask: Task<Void, Never>?
     private var volumeTask: Task<Void, Never>?
     private var lastStreamUpdate: Date = .distantPast
+    private var lastLoggedCommandFingerprint: String?
+    private var lastLoggedTransportError: String?
+    private let healthyPacketThreshold: TimeInterval = 3.0
 
     init(
         controller: AmpControlling = DevialetExpertControllerIOS(),
@@ -42,10 +46,10 @@ final class AppStateStore: ObservableObject {
                 lastStreamUpdate = Date()
                 status = update
                 clampVolumeToSettingsIfNeeded(sendCommandIfChanged: false)
-                isConnected = true
                 if errorMessage != nil {
                     errorMessage = nil
                 }
+                syncDiagnostics(logEvents: true)
             }
         }
 
@@ -57,6 +61,7 @@ final class AppStateStore: ObservableObject {
             }
         }
 
+        syncDiagnostics(logEvents: false)
         log("Status stream started")
     }
 
@@ -69,24 +74,24 @@ final class AppStateStore: ObservableObject {
         refreshTask = nil
         volumeTask = nil
 
+        syncDiagnostics(logEvents: false)
         log("Status stream stopped")
     }
 
-    func refreshStatus(timeout: TimeInterval = 2.0) async {
+    func refreshStatus(timeout: TimeInterval = 2.0, requireLiveData: Bool? = nil) async {
         guard !isSyncing else { return }
 
         isSyncing = true
         defer { isSyncing = false }
 
         do {
-            let fresh = try await controller.getCurrentStatus(timeout: timeout)
-            let streamIsStale = Date().timeIntervalSince(lastStreamUpdate) > 3.0
-            if streamIsStale {
-                status = fresh
-                clampVolumeToSettingsIfNeeded(sendCommandIfChanged: false)
-            }
-            isConnected = true
+            let forceLiveRefresh = requireLiveData ?? shouldRequireLiveStatusRefresh()
+            let fresh = try await controller.getCurrentStatus(timeout: timeout, requireLiveData: forceLiveRefresh)
+            status = fresh
+            clampVolumeToSettingsIfNeeded(sendCommandIfChanged: false)
+            syncDiagnostics(logEvents: true)
         } catch {
+            syncDiagnostics(logEvents: true)
             isConnected = false
             errorMessage = error.localizedDescription
             log("Refresh failed: \(error.localizedDescription)")
@@ -168,9 +173,11 @@ final class AppStateStore: ObservableObject {
     private func runCommandAsync(_ command: AmpCommand, optimisticText: String) async {
         do {
             try await controller.send(command)
-            await refreshStatus(timeout: 2.5)
+            syncDiagnostics(logEvents: true)
+            await refreshStatus(timeout: 2.5, requireLiveData: true)
             log(optimisticText)
         } catch {
+            syncDiagnostics(logEvents: true)
             errorMessage = error.localizedDescription
             log("Command failed: \(error.localizedDescription)")
         }
@@ -190,7 +197,6 @@ final class AppStateStore: ObservableObject {
     private func updateLocalVolume(_ value: Double) {
         if var current = status {
             current.volumeDb = value
-            current.lastUpdated = Date()
             status = current
         }
     }
@@ -207,6 +213,44 @@ final class AppStateStore: ObservableObject {
         guard sendCommandIfChanged, currentStatus.powerOn else { return }
         let optimisticText = String(format: "Volume adjusted to %.1f dB", normalized)
         runCommand(.setVolume(normalized), optimisticText: optimisticText)
+    }
+
+    private func shouldRequireLiveStatusRefresh() -> Bool {
+        let packetAge = controller.currentDiagnostics().lastRealPacketAt.map { Date().timeIntervalSince($0) } ?? .infinity
+        return packetAge > healthyPacketThreshold || Date().timeIntervalSince(lastStreamUpdate) > healthyPacketThreshold
+    }
+
+    private func syncDiagnostics(logEvents: Bool) {
+        let snapshot = controller.currentDiagnostics()
+        controllerDiagnostics = snapshot
+
+        if let lastRealPacketAt = snapshot.lastRealPacketAt {
+            isConnected = Date().timeIntervalSince(lastRealPacketAt) <= healthyPacketThreshold
+        } else {
+            isConnected = false
+        }
+
+        if logEvents, let error = snapshot.lastTransportError, error != lastLoggedTransportError {
+            lastLoggedTransportError = error
+            log("Listener issue: \(error)")
+        } else if snapshot.lastTransportError == nil {
+            lastLoggedTransportError = nil
+        }
+
+        if logEvents, let lastCommand = snapshot.lastCommand {
+            let fingerprint = "\(lastCommand.summary)|\(lastCommand.state.rawValue)|\(lastCommand.confirmedAt?.timeIntervalSince1970 ?? 0)"
+            if fingerprint != lastLoggedCommandFingerprint {
+                lastLoggedCommandFingerprint = fingerprint
+                switch lastCommand.state {
+                case .pending:
+                    log("Awaiting confirmation: \(lastCommand.summary)")
+                case .confirmed:
+                    log("Confirmed: \(lastCommand.summary)")
+                case .unconfirmed:
+                    log("Unconfirmed: \(lastCommand.summary)")
+                }
+            }
+        }
     }
 
     private static func loadSettings(from userDefaults: UserDefaults) -> VolumeSettings {

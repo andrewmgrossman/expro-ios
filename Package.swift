@@ -11,11 +11,40 @@ let package = Package(
         .library(
             name: "DevialetCore",
             targets: ["DevialetCore"]
+        ),
+        .library(
+            name: "ExProSupport",
+            targets: ["ExProSupport"]
+        ),
+        .executable(
+            name: "DevialetTools",
+            targets: ["DevialetTools"]
         )
     ],
     targets: [
         .target(
             name: "DevialetCore"
+        ),
+        .target(
+            name: "ExProSupport",
+            dependencies: ["DevialetCore"],
+            path: "ExProApp",
+            exclude: [
+                "Assets.xcassets",
+                "ContentView.swift",
+                "DevialetExpertControlApp.swift",
+                "DiagnosticsView.swift",
+                "Info.plist",
+                "SettingsView.swift"
+            ],
+            sources: [
+                "AppStateStore.swift",
+                "VolumeSettings.swift"
+            ]
+        ),
+        .executableTarget(
+            name: "DevialetTools",
+            dependencies: ["DevialetCore"]
         ),
         .testTarget(
             name: "DevialetCoreTests",
@@ -23,6 +52,10 @@ let package = Package(
             resources: [
                 .copy("Fixtures/status_fixture_1.bin")
             ]
+        ),
+        .testTarget(
+            name: "ExProSupportTests",
+            dependencies: ["ExProSupport", "DevialetCore"]
         )
     ]
 )

@@ -67,6 +67,90 @@ final class DevialetExpertControllerIOSTests: XCTestCase {
         XCTAssertEqual(update?.ipAddress, "192.168.1.62")
     }
 
+    func testForcedLiveRefreshWaitsForFreshPacketInsteadOfReturningCachedStatus() async throws {
+        let defaults = makeEphemeralDefaults()
+        let cachedStatus = AmpStatus(
+            deviceName: "Cached Expert",
+            ipAddress: "192.168.1.70",
+            powerOn: true,
+            muted: false,
+            currentChannel: 2,
+            volumeDb: -35.0,
+            channels: [AmpChannel(slot: 2, name: "UPnP")]
+        )
+
+        defaults.set("192.168.1.70", forKey: "devialet.cached.ip")
+        defaults.set(try JSONEncoder().encode(cachedStatus), forKey: "devialet.cached.status")
+
+        let transport = MockTransport()
+        let controller = DevialetExpertControllerIOS(transport: transport, userDefaults: defaults)
+        let packet = try statusPacket(volumeDb: -18.0, channel: 4, channelName: "AirPlay")
+
+        Task {
+            try? await Task.sleep(nanoseconds: 100_000_000)
+            transport.emitStatus(packet: packet, ipAddress: "192.168.1.70")
+        }
+
+        let live = try await controller.getCurrentStatus(timeout: 1.0, requireLiveData: true)
+        XCTAssertEqual(live.volumeDb, -18.0, accuracy: 0.01)
+        XCTAssertEqual(live.currentChannel, 4)
+    }
+
+    func testOptimisticUpdatesDoNotAdvanceLastRealPacketTimestamp() async throws {
+        let transport = MockTransport()
+        let defaults = makeEphemeralDefaults()
+        let controller = DevialetExpertControllerIOS(transport: transport, userDefaults: defaults)
+        let initialPacket = try statusPacket(volumeDb: -20.0, channel: 3, channelName: "Roon Ready")
+
+        Task {
+            try? await Task.sleep(nanoseconds: 100_000_000)
+            transport.emitStatus(packet: initialPacket, ipAddress: "192.168.1.71")
+        }
+
+        _ = try await controller.discover(timeout: 1.0)
+        let packetTime = try XCTUnwrap(controller.currentDiagnostics().lastRealPacketAt)
+
+        try await controller.send(.setVolume(-10.0))
+        let diagnosticsAfterSend = controller.currentDiagnostics()
+        XCTAssertEqual(diagnosticsAfterSend.lastRealPacketAt, packetTime)
+        XCTAssertEqual(diagnosticsAfterSend.lastCommand?.state, .pending)
+
+        let externalPacket = try statusPacket(volumeDb: -32.0, channel: 3, channelName: "Roon Ready")
+        Task {
+            try? await Task.sleep(nanoseconds: 100_000_000)
+            transport.emitStatus(packet: externalPacket, ipAddress: "192.168.1.71")
+        }
+
+        let refreshed = try await controller.getCurrentStatus(timeout: 1.0, requireLiveData: true)
+        XCTAssertEqual(refreshed.volumeDb, -32.0, accuracy: 0.01)
+    }
+
+    func testListenerRestartsAfterTransportError() async throws {
+        let transport = MockTransport()
+        let defaults = makeEphemeralDefaults()
+        let controller = DevialetExpertControllerIOS(transport: transport, userDefaults: defaults)
+        let packet = try fixtureData(named: "status_fixture_1", ext: "bin")
+
+        Task {
+            try? await Task.sleep(nanoseconds: 100_000_000)
+            transport.emitStatus(packet: packet, ipAddress: "192.168.1.72")
+        }
+
+        _ = try await controller.discover(timeout: 1.0)
+        transport.emitError(AmpControlError.decodeFailed(reason: "listener failed"))
+
+        Task {
+            try? await Task.sleep(nanoseconds: 100_000_000)
+            transport.emitStatus(packet: packet, ipAddress: "192.168.1.72")
+        }
+
+        _ = try await controller.getCurrentStatus(timeout: 1.0, requireLiveData: true)
+        let diagnostics = controller.currentDiagnostics()
+        XCTAssertEqual(diagnostics.listenerRestartCount, 1)
+        XCTAssertEqual(transport.startCount, 2)
+        XCTAssertGreaterThanOrEqual(transport.stopCount, 1)
+    }
+
     private func fixtureData(named: String, ext: String) throws -> Data {
         guard let url = Bundle.module.url(forResource: named, withExtension: ext) else {
             XCTFail("Fixture \(named).\(ext) not found")
@@ -81,6 +165,27 @@ final class DevialetExpertControllerIOSTests: XCTestCase {
         defaults.removePersistentDomain(forName: suiteName)
         return defaults
     }
+
+    private func statusPacket(volumeDb: Double, channel: Int, channelName: String) throws -> Data {
+        var packet = try fixtureData(named: "status_fixture_1", ext: "bin")
+        packet[563] = UInt8((channel << 2) & 0xFC)
+        packet[565] = UInt8((volumeDb + 97.5) * 2.0)
+
+        for slot in 0..<15 {
+            let base = 52 + (slot * 17)
+            packet[base] = 0
+            for index in 1..<17 {
+                packet[base + index] = 0
+            }
+        }
+
+        let base = 52 + (channel * 17)
+        packet[base] = UInt8(ascii: "1")
+        for (index, value) in channelName.utf8.prefix(16).enumerated() {
+            packet[base + 1 + index] = value
+        }
+        return packet
+    }
 }
 
 private final class MockTransport: DevialetTransporting, @unchecked Sendable {
@@ -89,6 +194,8 @@ private final class MockTransport: DevialetTransporting, @unchecked Sendable {
     private var onPacket: (@Sendable (Data, String?) -> Void)?
     private var onError: (@Sendable (Error) -> Void)?
     private(set) var sentPackets: [(packet: Data, ipAddress: String)] = []
+    private(set) var startCount = 0
+    private(set) var stopCount = 0
 
     func startStatusListener(
         onPacket: @escaping @Sendable (Data, String?) -> Void,
@@ -97,6 +204,7 @@ private final class MockTransport: DevialetTransporting, @unchecked Sendable {
         lock.withLock {
             self.onPacket = onPacket
             self.onError = onError
+            startCount += 1
         }
     }
 
@@ -104,6 +212,7 @@ private final class MockTransport: DevialetTransporting, @unchecked Sendable {
         lock.withLock {
             onPacket = nil
             onError = nil
+            stopCount += 1
         }
     }
 
@@ -116,6 +225,11 @@ private final class MockTransport: DevialetTransporting, @unchecked Sendable {
     func emitStatus(packet: Data, ipAddress: String) {
         let callback = lock.withLock { onPacket }
         callback?(packet, ipAddress)
+    }
+
+    func emitError(_ error: Error) {
+        let callback = lock.withLock { onError }
+        callback?(error)
     }
 }
 

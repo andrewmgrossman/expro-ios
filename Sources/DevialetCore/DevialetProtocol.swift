@@ -1,6 +1,15 @@
 import Foundation
 
 public struct DevialetProtocol: Sendable {
+    private static let channelCommandValues: [Int: Int] = [
+        0: -1,
+        2: 0,
+        3: 3,
+        4: 4,
+        5: 5,
+        14: 14
+    ]
+
     public static let statusPort: UInt16 = 45454
     public static let commandPort: UInt16 = 45455
     public static let statusPacketMinLength: Int = 566
@@ -95,17 +104,7 @@ public struct DevialetProtocol: Sendable {
                 packet[8] = 0x3F
                 packet[9] = 0x80
             } else {
-                let cmdValue: Int
-                switch slot {
-                case 0:
-                    cmdValue = -1
-                case 2:
-                    cmdValue = 0
-                case 3:
-                    cmdValue = 2
-                default:
-                    cmdValue = slot
-                }
+                let cmdValue = Self.channelCommandValues[slot] ?? slot
 
                 let rawCmd = UInt32(UInt16(bitPattern: Int16(cmdValue))) << 5
                 let outVal = UInt32(0x4000) | rawCmd
